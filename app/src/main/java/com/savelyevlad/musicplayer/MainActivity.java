@@ -26,6 +26,7 @@ import android.widget.Toast;
 import com.savelyevlad.musicplayer.services.MediaPlayerService;
 import com.savelyevlad.musicplayer.tools.Audio;
 import com.savelyevlad.musicplayer.tools.AudioAdapter;
+import com.savelyevlad.musicplayer.tools.StorageUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,6 +74,8 @@ public class MainActivity extends AppCompatActivity {
 
     private ArrayList<Audio> audioList;
     private AudioAdapter audioAdapter;
+
+    public static final String Broadcast_PLAY_NEW_AUDIO = "com.savelyevlad.musicplayer.PlayNewAudio";
 
     private MediaPlayerService player;
     boolean serviceBound = false;
@@ -156,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
             case R.id.button_action:
                 if(isPaused && !serviceBound) {
 //                    playAudio("https://upload.wikimedia.org/wikipedia/commons/6/6c/Grieg_Lyric_Pieces_Kobold.ogg");
-                    playAudio(audioList.get(0).getData());
+//                    playAudio(audioList.get(0).getData());
                 }
                 else if(isPaused) {
                     resumeAudio();
@@ -169,18 +172,26 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    private void playAudio(String media) {
-        isPaused = false;
+    private void playAudio(int audioIndex) {
         //Check is service is active
         if (!serviceBound) {
+            //Store Serializable audioList to SharedPreferences
+            StorageUtil storage = new StorageUtil(getApplicationContext());
+            storage.storeAudio(audioList);
+            storage.storeAudioIndex(audioIndex);
+
             Intent playerIntent = new Intent(this, MediaPlayerService.class);
-            playerIntent.putExtra("media", media);
             startService(playerIntent);
             bindService(playerIntent, serviceConnection, Context.BIND_AUTO_CREATE);
-            buttonAction.setText("Pause");
         } else {
+            //Store the new audioIndex to SharedPreferences
+            StorageUtil storage = new StorageUtil(getApplicationContext());
+            storage.storeAudioIndex(audioIndex);
+
             //Service is active
-            //Send media with BroadcastReceiver
+            //Send a broadcast to the service -> PLAY_NEW_AUDIO
+            Intent broadcastIntent = new Intent(Broadcast_PLAY_NEW_AUDIO);
+            sendBroadcast(broadcastIntent);
         }
     }
 
