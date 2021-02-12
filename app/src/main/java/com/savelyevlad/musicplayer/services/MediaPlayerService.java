@@ -57,6 +57,10 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
     private int audioIndex = -1;
     private Audio activeAudio; //an object of the currently playing audio
 
+    public int getAudioIndex() {
+        return audioIndex;
+    }
+
     public void setMainActivity(MainActivity mainActivity) {
         this.mainActivity = mainActivity;
     }
@@ -126,6 +130,10 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
     @Override
     public void onCompletion(MediaPlayer mp) {
         //Invoked when playback of a media source has completed.
+        mainActivity.getButtonAction().setText("Play");
+        mainActivity.setPaused(true);
+        resumePosition = 0;
+        mediaPlayer.seekTo(0);
         stopMedia();
         //stop the service
         stopSelf();

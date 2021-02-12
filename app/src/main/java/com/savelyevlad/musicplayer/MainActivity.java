@@ -82,6 +82,10 @@ public class MainActivity extends AppCompatActivity {
     boolean serviceBound = false;
     private boolean isPaused = true;
 
+    public void setPaused(boolean paused) {
+        isPaused = paused;
+    }
+
     private MainActivity getThis() {
         return this;
     }
@@ -156,13 +160,17 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         buttonAction.setOnClickListener(onClickListener);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                playAudio((int) id);
+        listView.setOnItemClickListener((parent, view, position, id) -> {
+            playAudio((int) id);
+            view.setBackgroundColor(0xFF00FF00);
+            if(lastClickedSong != null) {
+                lastClickedSong.setBackgroundColor(0);
             }
+            lastClickedSong = view;
         });
     }
+
+    private View lastClickedSong = null;
 
     private View.OnClickListener onClickListener = v -> {
         switch (v.getId()) {
@@ -184,6 +192,8 @@ public class MainActivity extends AppCompatActivity {
     };
 
     private void playAudio(int audioIndex) {
+        isPaused = false;
+        buttonAction.setText("Pause");
         //Check is service is active
         if (!serviceBound) {
             //Store Serializable audioList to SharedPreferences
