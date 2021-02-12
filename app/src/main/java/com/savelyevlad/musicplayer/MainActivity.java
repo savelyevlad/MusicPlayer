@@ -16,6 +16,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.provider.MediaStore;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -133,31 +134,41 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if(isChanging) {
+                if(player != null && isChanging) {
                     player.goToPosition(progress);
                 }
             }
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-                isChanging = true;
-                player.pauseMedia();
+                if(player != null) {
+                    isChanging = true;
+                    player.pauseMedia();
+                }
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                isChanging = false;
-                player.resumeMedia();
+                if(player != null) {
+                    isChanging = false;
+                    player.resumeMedia();
+                }
             }
         });
-
         buttonAction.setOnClickListener(onClickListener);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                playAudio((int) id);
+            }
+        });
     }
 
     private View.OnClickListener onClickListener = v -> {
         switch (v.getId()) {
             case R.id.button_action:
                 if(isPaused && !serviceBound) {
+                    playAudio(0);
 //                    playAudio("https://upload.wikimedia.org/wikipedia/commons/6/6c/Grieg_Lyric_Pieces_Kobold.ogg");
 //                    playAudio(audioList.get(0).getData());
                 }
