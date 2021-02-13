@@ -54,6 +54,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
 
     //AudioPlayer notification ID
     private static final int NOTIFICATION_ID = 228;
+    private static final String CHANNEL_ID = "KEKLELKEK";
 
     //List of available Audio files
     private ArrayList<Audio> audioList;
@@ -84,8 +85,12 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
 
     private Handler handler = new Handler();
     private Runnable forHandler = new Runnable() {
+        private int oldAudioIndex = -1;
         @Override
         public void run() {
+            if(oldAudioIndex != audioIndex) {
+                mainActivity.getAudioAdapter().notifyDataSetChanged();
+            }
             handler.postDelayed(this, 50);
             mainActivity.checkIsPlaying();
             mainActivity.getSeekBar().setProgress((int) (mediaPlayer.getCurrentPosition() * 1.0 / mediaPlayer.getDuration() * 100));
@@ -264,6 +269,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
 
         //Handle Intent action from MediaSession.TransportControls
         handleIncomingActions(intent);
+
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -388,7 +394,11 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
         public void onReceive(Context context, Intent intent) {
 
             //Get the new media index form SharedPreferences
+            int oldAudioIndex = audioIndex;
             audioIndex = new StorageUtil(getApplicationContext()).loadAudioIndex();
+//            if (audioIndex != oldAudioIndex) {
+//                mainActivity.getAudioAdapter().notifyDataSetChanged();
+//            }
             if (audioIndex != -1 && audioIndex < audioList.size()) {
                 //index is in a valid range
                 activeAudio = audioList.get(audioIndex);
@@ -525,7 +535,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
         mediaPlayer.reset();
         initMediaPlayer();
 
-        mainActivity.checkIsPlaying();
+//        mainActivity.getAudioAdapter().notifyDataSetChanged();
     }
 
     public void skipToPrevious() {
@@ -548,7 +558,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
         mediaPlayer.reset();
         initMediaPlayer();
 
-        mainActivity.checkIsPlaying();
+//        mainActivity.getAudioAdapter().notifyDataSetChanged();
     }
 
     // added for notifications
@@ -561,7 +571,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
 //            String description = getString(R.string.channel_description);
             String description = "getString(R.string.channel_description)";
             int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel channel = new NotificationChannel("KEKLELKEK", name, importance);
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
             channel.setDescription(description);
             // Register the channel with the system; you can't change the importance
             // or other notification behaviors after this
@@ -590,7 +600,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
                 R.drawable.ic_launcher_background); //replace with your own image
 
         // Create a new Notification
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, "KEKLELKEK")
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setShowWhen(false)
                 // Set the Notification style
                 .setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
@@ -605,7 +615,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
                 .setSmallIcon(android.R.drawable.stat_sys_headset)
                 // Set Notification content information
                 .setContentText(activeAudio.getArtist())
-                .setContentTitle(activeAudio.getAlbum())
+                .setContentTitle(activeAudio.getTitle())
                 .setContentInfo(activeAudio.getTitle())
                 // Add playback actions
                 .addAction(android.R.drawable.ic_media_previous, "previous", playbackAction(3))
@@ -622,7 +632,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
         notificationManager.cancel(NOTIFICATION_ID);
     }
 
-    private PendingIntent playbackAction(int actionNumber) {
+    public PendingIntent playbackAction(int actionNumber) {
         Intent playbackAction = new Intent(this, MediaPlayerService.class);
         switch (actionNumber) {
             case 0:

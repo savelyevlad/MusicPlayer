@@ -68,6 +68,10 @@ public class MainActivity extends AppCompatActivity {
 //    @Getter
     private ListView listView;
 
+    public AudioAdapter getAudioAdapter() {
+        return audioAdapter;
+    }
+
     private ArrayList<Audio> audioList;
     private AudioAdapter audioAdapter;
 
@@ -161,7 +165,7 @@ public class MainActivity extends AppCompatActivity {
         buttonAction.setOnClickListener(onClickListener);
         listView.setOnItemClickListener((parent, view, position, id) -> {
             playAudio((int) id);
-            audioAdapter.notifyDataSetChanged();
+//            audioAdapter.notifyDataSetChanged();
             checkIsPlaying();
         });
     }
