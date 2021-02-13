@@ -203,12 +203,12 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.button_next:
                 if(serviceBound && player != null) {
-                    player.skipToNext();
+                    player.playbackAction(2);
                 }
                 break;
             case  R.id.button_previous:
                 if(serviceBound && player != null) {
-                    player.skipToPrevious();
+                    player.playbackAction(3);
                 }
         }
     };
