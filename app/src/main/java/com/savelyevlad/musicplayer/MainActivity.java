@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -172,13 +173,12 @@ public class MainActivity extends AppCompatActivity {
 
     private View lastClickedSong = null;
 
+    @SuppressLint("NonConstantResourceId")
     private View.OnClickListener onClickListener = v -> {
         switch (v.getId()) {
             case R.id.button_action:
                 if(isPaused && !serviceBound) {
                     playAudio(0);
-//                    playAudio("https://upload.wikimedia.org/wikipedia/commons/6/6c/Grieg_Lyric_Pieces_Kobold.ogg");
-//                    playAudio(audioList.get(0).getData());
                 }
                 else if(isPaused) {
                     resumeAudio();
@@ -186,8 +186,16 @@ public class MainActivity extends AppCompatActivity {
                 else {
                     pauseAudio();
                 }
-//                playAudio(audioList.get(0).getData());
                 break;
+            case R.id.button_next:
+                if(serviceBound && player != null) {
+                    player.skipToNext();
+                }
+                break;
+            case  R.id.button_previous:
+                if(serviceBound && player != null) {
+                    player.skipToPrevious();
+                }
         }
     };
 
