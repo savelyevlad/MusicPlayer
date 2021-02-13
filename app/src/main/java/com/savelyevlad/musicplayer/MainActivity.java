@@ -13,12 +13,9 @@ import android.content.ServiceConnection;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.IBinder;
 import android.provider.MediaStore;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SeekBar;
@@ -31,9 +28,6 @@ import com.savelyevlad.musicplayer.tools.AudioAdapter;
 import com.savelyevlad.musicplayer.tools.StorageUtil;
 
 import java.util.ArrayList;
-import java.util.List;
-
-import lombok.Getter;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -78,6 +72,10 @@ public class MainActivity extends AppCompatActivity {
     private AudioAdapter audioAdapter;
 
     public static final String Broadcast_PLAY_NEW_AUDIO = "com.savelyevlad.musicplayer.PlayNewAudio";
+
+    public MediaPlayerService getPlayer() {
+        return player;
+    }
 
     private MediaPlayerService player;
     boolean serviceBound = false;
@@ -163,12 +161,31 @@ public class MainActivity extends AppCompatActivity {
         buttonAction.setOnClickListener(onClickListener);
         listView.setOnItemClickListener((parent, view, position, id) -> {
             playAudio((int) id);
-            view.setBackgroundColor(0xFF00FF00);
+            audioAdapter.notifyDataSetChanged();
+            checkIsPlaying();
+//            view.setBackgroundColor(0xFF00FF00);
             if(lastClickedSong != null) {
-                lastClickedSong.setBackgroundColor(0);
+//                lastClickedSong.setBackgroundColor(0);
             }
             lastClickedSong = view;
         });
+    }
+
+    public void checkIsPlaying() {
+        if(player != null) {
+            if(player.isPlaying()) {
+                if(isPaused) {
+                    isPaused = false;
+                    buttonAction.setText("pause");
+                }
+            }
+            else {
+                if(!isPaused) {
+                    isPaused = true;
+                    buttonAction.setText(R.string.play);
+                }
+            }
+        }
     }
 
     private View lastClickedSong = null;
@@ -255,14 +272,15 @@ public class MainActivity extends AppCompatActivity {
                 String title = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE));
                 String album = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM));
                 String artist = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
+                String duration = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION));
 
                 // Save to audioList
-                audioList.add(new Audio(data, title, album, artist));
+                audioList.add(new Audio(data, title, album, artist, duration));
             }
         }
         cursor.close();
 
-        audioAdapter = new AudioAdapter(this, audioList);
+        audioAdapter = new AudioAdapter(this, audioList, player);
         listView.setAdapter(audioAdapter);
     }
 

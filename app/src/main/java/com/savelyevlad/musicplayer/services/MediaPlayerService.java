@@ -87,6 +87,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
         @Override
         public void run() {
             handler.postDelayed(this, 50);
+            mainActivity.checkIsPlaying();
             mainActivity.getSeekBar().setProgress((int) (mediaPlayer.getCurrentPosition() * 1.0 / mediaPlayer.getDuration() * 100));
         }
     };
@@ -326,6 +327,10 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
         mediaPlayer.seekTo(resumePosition);
     }
 
+    public boolean isPlaying() {
+        return mediaPlayer.isPlaying();
+    }
+
     //Becoming noisy
     private BroadcastReceiver becomingNoisyReceiver = new BroadcastReceiver() {
         @Override
@@ -519,6 +524,8 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
         //reset mediaPlayer
         mediaPlayer.reset();
         initMediaPlayer();
+
+        mainActivity.checkIsPlaying();
     }
 
     public void skipToPrevious() {
@@ -540,6 +547,8 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
         //reset mediaPlayer
         mediaPlayer.reset();
         initMediaPlayer();
+
+        mainActivity.checkIsPlaying();
     }
 
     // added for notifications
@@ -562,7 +571,6 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
     }
 
     private void buildNotification(PlaybackStatus playbackStatus) {
-
 
         int notificationAction = android.R.drawable.ic_media_pause; //needs to be initialized
         PendingIntent play_pauseAction = null;
