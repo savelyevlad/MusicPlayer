@@ -163,11 +163,6 @@ public class MainActivity extends AppCompatActivity {
             playAudio((int) id);
             audioAdapter.notifyDataSetChanged();
             checkIsPlaying();
-//            view.setBackgroundColor(0xFF00FF00);
-            if(lastClickedSong != null) {
-//                lastClickedSong.setBackgroundColor(0);
-            }
-            lastClickedSong = view;
         });
     }
 
@@ -176,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
             if(player.isPlaying()) {
                 if(isPaused) {
                     isPaused = false;
-                    buttonAction.setText("pause");
+                    buttonAction.setText(R.string.pause);
                 }
             }
             else {
@@ -187,8 +182,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-
-    private View lastClickedSong = null;
 
     @SuppressLint("NonConstantResourceId")
     private View.OnClickListener onClickListener = v -> {
@@ -218,7 +211,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void playAudio(int audioIndex) {
         isPaused = false;
-        buttonAction.setText("Pause");
+        buttonAction.setText(R.string.pause);
         //Check is service is active
         if (!serviceBound) {
             //Store Serializable audioList to SharedPreferences
@@ -251,7 +244,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void resumeAudio() {
         if (isPaused && player != null) {
-            buttonAction.setText("Pause");
+            buttonAction.setText(R.string.pause);
             player.resumeMedia();
             isPaused = false;
         }
