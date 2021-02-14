@@ -2,5 +2,6 @@
     <string name="app_name">Music Player</string>
     <string name="previous"><![CDATA[<]]></string>
     <string name="play">play</string>
+    <string name="pause">pause</string>
     <string name="next"><![CDATA[>]]></string>
 </resources>
