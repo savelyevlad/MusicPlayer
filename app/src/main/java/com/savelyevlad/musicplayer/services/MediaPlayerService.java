@@ -580,7 +580,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
         }
     }
 
-    private void buildNotification(PlaybackStatus playbackStatus) {
+    public void buildNotification(PlaybackStatus playbackStatus) {
 
         int notificationAction = android.R.drawable.ic_media_pause; //needs to be initialized
         PendingIntent play_pauseAction = null;

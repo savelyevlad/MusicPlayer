@@ -25,6 +25,7 @@ import android.widget.Toast;
 import com.savelyevlad.musicplayer.services.MediaPlayerService;
 import com.savelyevlad.musicplayer.tools.Audio;
 import com.savelyevlad.musicplayer.tools.AudioAdapter;
+import com.savelyevlad.musicplayer.tools.PlaybackStatus;
 import com.savelyevlad.musicplayer.tools.StorageUtil;
 
 import java.util.ArrayList;
@@ -176,12 +177,14 @@ public class MainActivity extends AppCompatActivity {
                 if(isPaused) {
                     isPaused = false;
                     buttonAction.setText(R.string.pause);
+                    player.buildNotification(PlaybackStatus.PLAYING);
                 }
             }
             else {
                 if(!isPaused) {
                     isPaused = true;
                     buttonAction.setText(R.string.play);
+                    player.buildNotification(PlaybackStatus.PAUSED);
                 }
             }
         }
@@ -214,8 +217,8 @@ public class MainActivity extends AppCompatActivity {
     };
 
     private void playAudio(int audioIndex) {
-        isPaused = false;
-        buttonAction.setText(R.string.pause);
+//        isPaused = false;
+//        buttonAction.setText(R.string.pause);
         //Check is service is active
         if (!serviceBound) {
             //Store Serializable audioList to SharedPreferences
@@ -241,16 +244,16 @@ public class MainActivity extends AppCompatActivity {
     private void pauseAudio() {
         if (!isPaused && player != null) {
             player.pauseMedia();
-            isPaused = true;
-            buttonAction.setText(R.string.play);
+//            isPaused = true;
+//            buttonAction.setText(R.string.play);
         }
     }
 
     private void resumeAudio() {
         if (isPaused && player != null) {
-            buttonAction.setText(R.string.pause);
+//            buttonAction.setText(R.string.pause);
             player.resumeMedia();
-            isPaused = false;
+//            isPaused = false;
         }
     }
 
