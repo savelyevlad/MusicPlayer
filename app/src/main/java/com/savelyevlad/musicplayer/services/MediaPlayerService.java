@@ -504,7 +504,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
         });
     }
 
-    private void updateMetaData() {
+    public void updateMetaData() {
         Bitmap albumArt = BitmapFactory.decodeResource(getResources(),
                 R.drawable.ic_launcher_background); //replace with medias albumArt
         // Update the current metadata

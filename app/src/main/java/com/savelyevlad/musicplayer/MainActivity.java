@@ -164,6 +164,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         buttonAction.setOnClickListener(onClickListener);
+        buttonNext.setOnClickListener(onClickListener);
+        buttonPrevious.setOnClickListener(onClickListener);
         listView.setOnItemClickListener((parent, view, position, id) -> {
             playAudio((int) id);
 //            audioAdapter.notifyDataSetChanged();
@@ -205,16 +207,28 @@ public class MainActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.button_next:
-                if(serviceBound && player != null) {
-                    player.playbackAction(2);
-                }
+                nextSong();
                 break;
             case  R.id.button_previous:
-                if(serviceBound && player != null) {
-                    player.playbackAction(3);
-                }
+                previousSong();
         }
     };
+
+    private void nextSong() {
+        if(player != null) {
+            player.skipToNext();
+            player.updateMetaData();
+            player.buildNotification(PlaybackStatus.PLAYING);
+        }
+    }
+
+    private void previousSong() {
+        if(player != null) {
+            player.skipToNext();
+            player.updateMetaData();
+            player.buildNotification(PlaybackStatus.PLAYING);
+        }
+    }
 
     private void playAudio(int audioIndex) {
 //        isPaused = false;
