@@ -240,11 +240,13 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
             audioList = storage.loadAudio();
             audioIndex = storage.loadAudioIndex();
 
-            if (audioIndex != -1 && audioIndex < audioList.size()) {
-                //index is in a valid range
-                activeAudio = audioList.get(audioIndex);
-            } else {
-                stopSelf();
+            synchronized (this) {
+                if (audioIndex != -1 && audioIndex < audioList.size()) {
+                    //index is in a valid range
+                    activeAudio = audioList.get(audioIndex);
+                } else {
+                    stopSelf();
+                }
             }
         } catch (NullPointerException e) {
             stopSelf();
@@ -393,26 +395,28 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
         @Override
         public void onReceive(Context context, Intent intent) {
 
-            //Get the new media index form SharedPreferences
-            int oldAudioIndex = audioIndex;
-            audioIndex = new StorageUtil(getApplicationContext()).loadAudioIndex();
-//            if (audioIndex != oldAudioIndex) {
-//                mainActivity.getAudioAdapter().notifyDataSetChanged();
-//            }
-            if (audioIndex != -1 && audioIndex < audioList.size()) {
-                //index is in a valid range
-                activeAudio = audioList.get(audioIndex);
-            } else {
-                stopSelf();
-            }
+            synchronized (this) {
+                //Get the new media index form SharedPreferences
+                int oldAudioIndex = audioIndex;
+                audioIndex = new StorageUtil(getApplicationContext()).loadAudioIndex();
+    //            if (audioIndex != oldAudioIndex) {
+    //                mainActivity.getAudioAdapter().notifyDataSetChanged();
+    //            }
+                if (audioIndex != -1 && audioIndex < audioList.size()) {
+                    //index is in a valid range
+                    activeAudio = audioList.get(audioIndex);
+                } else {
+                    stopSelf();
+                }
 
-            //A PLAY_NEW_AUDIO action received
-            //reset mediaPlayer to play the new Audio
-            stopMedia();
-            mediaPlayer.reset();
-            initMediaPlayer();
-            updateMetaData();
-            buildNotification(PlaybackStatus.PLAYING);
+                //A PLAY_NEW_AUDIO action received
+                //reset mediaPlayer to play the new Audio
+                stopMedia();
+                mediaPlayer.reset();
+                initMediaPlayer();
+                updateMetaData();
+                buildNotification(PlaybackStatus.PLAYING);
+            }
         }
     };
 
@@ -516,7 +520,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
                 .build());
     }
 
-    public void skipToNext() {
+    public synchronized void skipToNext() {
 
         if (audioIndex == audioList.size() - 1) {
             //if last in playlist
@@ -538,7 +542,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
 //        mainActivity.getAudioAdapter().notifyDataSetChanged();
     }
 
-    public void skipToPrevious() {
+    public synchronized void skipToPrevious() {
 
         if (audioIndex == 0) {
             //if first in playlist

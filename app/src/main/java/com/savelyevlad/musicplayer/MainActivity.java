@@ -169,7 +169,7 @@ public class MainActivity extends AppCompatActivity {
         listView.setOnItemClickListener((parent, view, position, id) -> {
             playAudio((int) id);
 //            audioAdapter.notifyDataSetChanged();
-            checkIsPlaying();
+//            checkIsPlaying();
         });
     }
 
@@ -230,7 +230,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void playAudio(int audioIndex) {
+    private synchronized void playAudio(int audioIndex) {
 //        isPaused = false;
 //        buttonAction.setText(R.string.pause);
         //Check is service is active
