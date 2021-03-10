@@ -4,4 +4,26 @@
     <string name="play">play</string>
     <string name="pause">pause</string>
     <string name="next"><![CDATA[>]]></string>
+    <!--  new data lays down there  -->
+    <string name="Music">Music</string>
+    <string name="MoreThan"> > </string>
+    <string name="Playlist">Lista Odtwarzania</string>
+    <string name="X">X</string>
+    <string name="PlayerText">Dotknij aby wlaczyc</string>
+    <string name="Play">Play</string>
+    <string name="tu_bedzie_binding">Tu bedzie binding</string>
+    <string name="back"><![CDATA[<]]></string>
+    <string name="nowa_lista_odtwarzania_1">Nowa lista odtwarzania 1</string>
+    <string name="plus">+</string>
+    <string name="dotknij_aby_w_czy">Dotknij, aby włączyć</string>
+    <string name="sortuj_utwory">Sortuj utwory</string>
+    <string name="wg_nazwy">Wg nazwy</string>
+    <string name="wg_czasu_dodania">Wg czasu dodania</string>
+    <string name="DText">Usunac liste odtwarzania</string>
+    <string name="usu">Usuń</string>
+    <string name="anuluj">Anuluj</string>
+    <string name="ok">OK</string>
+    <string name="Anuluj">Anuluj</string>
+    <string name="nazwa_listy_odtwarzania">  Nazwa listy odtwarzania</string>
+    <string name="Back"><![CDATA[<]]></string>
 </resources>
